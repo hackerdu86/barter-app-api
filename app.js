@@ -28,24 +28,27 @@ app.use(BASE_URL, barterItemRoutes);
 app.use(BASE_URL, publicationRoutes);
 
 app.use((req, res, next) => {
-    return next(new HttpError("Route not found", 404));
+  return next(new HttpError("Route not found", 404));
+});
+
+app.use((error, req, res, next) => {
+  if (res.headerSent) {
+    return next(error);
+  }
+  res.status(error.code || 500);
+  res.json({
+    message: error.message || "An unknown error occured",
   });
-  
-  app.use((error, req, res, next) => {
-    if (res.headerSent) {
-      return next(error);
-    }
-    res.status(error.code || 500);
-    res.json({
-      message: error.message || "An unknown error occured",
-    });
-  });
-  
+});
 
 mongoose.set("strictQuery", true);
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/barter-db")
+  .connect(
+    "mongodb+srv://hackerdu86:<" +
+      process.env.DB_PASSWORD +
+      ">@cluster-gestion-de-stag.b2wvhmb.mongodb.net/"
+  )
   .then(() => {
     app.listen(3306);
     console.log("Successfully connected to the data base");
