@@ -2,8 +2,12 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const HttpError = require("./models/http-error");
+const BASE_URL = "/api";
 
 //Controller assignation
+const userRoutes = require("./routes/user-routes");
+const barterItemRoutes = require("./routes/barter-item-routes");
+const publicationRoutes = require("./routes/publication-routes");
 
 //Main app
 const app = express();
@@ -19,24 +23,34 @@ app.use((req, res, next) => {
 });
 
 //Route definitions
+app.use(BASE_URL, userRoutes);
+app.use(BASE_URL, barterItemRoutes);
+app.use(BASE_URL, publicationRoutes);
 
-
-app.use((requete, reponse, next) => {
-  return next(new HttpError("Route not found", 404));
-});
-
-app.use((error, req, res, next) => {
-  if (res.headerSent) {
-    return next(error);
-  }
-  res.status(error.code || 500);
-  res.json({
-    message: error.message || "An unknown error occured",
+app.use((req, res, next) => {
+    return next(new HttpError("Route not found", 404));
   });
-});
+  
+  app.use((error, req, res, next) => {
+    if (res.headerSent) {
+      return next(error);
+    }
+    res.status(error.code || 500);
+    res.json({
+      message: error.message || "An unknown error occured",
+    });
+  });
+  
 
 mongoose.set("strictQuery", true);
 
-app.listen(5000);
-console.log("Successfully connected to the data base");
-console.log("App running");
+mongoose
+  .connect("mongodb://127.0.0.1:27017/barter-db")
+  .then(() => {
+    app.listen(3306);
+    console.log("Successfully connected to the data base");
+    console.log("App running");
+  })
+  .catch((erreur) => {
+    console.log(erreur);
+  });
