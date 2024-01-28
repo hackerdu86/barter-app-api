@@ -77,6 +77,7 @@ const demandeEchange = async (requete, reponse, next) => {
       const produit = await Produit.findById(produitId)
       
       user.products.push(produit)
+      await user.save();
       // Creation de demande
       const auteur = User.findById(produit.userId);
       const firstName = user.firstName;
@@ -84,13 +85,15 @@ const demandeEchange = async (requete, reponse, next) => {
       const email = user.email;
       const demande = new demande({auteur, firstName, lastName, email, message, userId})
       auteur.demande.push(demande)
-
+      user.products.push(produit)
+      
       await user.save();
+      await auteur.save();
   
   
       reponse.status(200).json({ message: "L'utilisateur a faite la demande avec succes." });
     } catch (err) {
-      return next(new HttpError("Une erreur s'est produite lors de la postulation au stage.", 500));
+      return next(new HttpError("Une erreur s'est produite lors de la demande.", 500));
     }
   };
 
