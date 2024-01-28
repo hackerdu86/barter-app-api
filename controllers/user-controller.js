@@ -72,7 +72,7 @@ async function createUser(req, res, next) {
 }
 
 const demandeEchange = async (requete, reponse, next) => {
-  const { userId, produitId, message } = requete.body;
+  const { userId, produitId, description } = requete.body;
 
   try {
     const user = await User.findById(userId);
@@ -93,14 +93,16 @@ const demandeEchange = async (requete, reponse, next) => {
       firstName,
       lastName,
       email,
-      message,
+      description,
       userId,
     });
+    auteur.demande.push(demande);
     user.products.push(produit);
     console.log("push")
 
     await user.save();
-    console.log("saved")
+    await auteur.save();
+    console.log("push")
 
     reponse
       .status(200)
