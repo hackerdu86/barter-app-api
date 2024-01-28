@@ -72,7 +72,7 @@ async function createUser(req, res, next) {
 }
 
 const demandeEchange = async (requete, reponse, next) => {
-  const { userId, produitId, description } = requete.body;
+  const { userId, produitId, description, firstName, lastName, email } = requete.body;
 
   try {
     const user = await User.findById(userId);
@@ -85,9 +85,6 @@ const demandeEchange = async (requete, reponse, next) => {
 
     // Creation de demande
     const auteur = User.findById(produit.userId);
-    const firstName = user.firstName;
-    const lastName = user.lastName;
-    const email = user.email;
     const demande = new demande({
       auteur,
       firstName,
