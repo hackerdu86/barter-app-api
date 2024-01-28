@@ -96,12 +96,10 @@ const demandeEchange = async (requete, reponse, next) => {
       message,
       userId,
     });
-    auteur.demande.push(demande);
     user.products.push(produit);
     console.log("push")
 
     await user.save();
-    await auteur.save();
     console.log("saved")
 
     reponse
