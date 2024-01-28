@@ -2,6 +2,7 @@ const HttpError = require("../models/http-error");
 const User = require("../models/user");
 const Produit = require("../models/barter-item")
 const crypto = require("crypto");
+const demande = require("../models/demande");
 //GET METHODS
 async function getUserId(req, res, next) {
   const { email, rawPassword } = req.params;
@@ -64,7 +65,7 @@ async function createUser(req, res, next) {
 }
 
 const demandeEchange = async (requete, reponse, next) => {
-    const { userId, produitId } = requete.body;
+    const { userId, produitId, message  } = requete.body;
   
     try {
       const user = await User.findById(userId);
@@ -76,18 +77,20 @@ const demandeEchange = async (requete, reponse, next) => {
       const produit = await Produit.findById(produitId)
       
       user.products.push(produit)
+      // Creation de demande
+      const auteur = User.findById(produit.userId);
+      const firstName = user.firstName;
+      const lastName = user.lastName;
+      const email = user.email;
+      const demande = new demande({auteur, firstName, lastName, email, message, userId})
+      auteur.demande.push(demande)
 
-      
-  
- 
-  
-  
       await user.save();
   
   
       reponse.status(200).json({ message: "L'utilisateur a faite la demande avec succes." });
     } catch (err) {
-      return next(new HttpErreur("Une erreur s'est produite lors de la postulation au stage.", 500));
+      return next(new HttpError("Une erreur s'est produite lors de la postulation au stage.", 500));
     }
   };
 

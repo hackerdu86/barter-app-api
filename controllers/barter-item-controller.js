@@ -35,6 +35,9 @@ async function getBarterItem(req, res, next) {
 }
 
 //POST METHODS
+
+
+
 async function createBarterItem(req, res, next) {
   try {
     const { title, imageName, description, address, userId, category } = req.body;
@@ -60,6 +63,8 @@ async function createBarterItem(req, res, next) {
   }
 }
 
+
+
 //PATCH METHODS
 //DELETE METHODS
 async function deleteBarterItem(req, res, next) {
@@ -73,6 +78,8 @@ async function deleteBarterItem(req, res, next) {
     );
   }
 }
+
+
 
 module.exports = {
   getBarterItems: getBarterItems,

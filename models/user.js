@@ -1,3 +1,4 @@
+const { json } = require("express");
 const mongoose = require("mongoose");
 
 const Produits = require("../models/barter-item")
@@ -9,7 +10,8 @@ const userSchema = new Schema({
   lastName: { type: String, required: true },
   email: { type: String, required: true },
   password: { type: String, required: true },
-  products: [{type: mongoose.Types.ObjectId, required:true, ref:"BarterItem"}]
+  products: [{type: mongoose.Types.ObjectId, required:true, ref:"BarterItem"}],
+  demande: [{type: mongoose.Types.ObjectId, required:true, ref:"Demande"}]
 });
 
 module.exports = mongoose.model("User", userSchema);
