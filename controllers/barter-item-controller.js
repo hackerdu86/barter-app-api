@@ -37,7 +37,7 @@ async function getBarterItem(req, res, next) {
 //POST METHODS
 async function createBarterItem(req, res, next) {
   try {
-    const { title, imageName, description, address, userId } = req.body;
+    const { title, imageName, description, address, userId, category } = req.body;
 
     let barterItem = await new BarterItem({
       title,
@@ -45,6 +45,7 @@ async function createBarterItem(req, res, next) {
       description,
       address,
       userId,
+      category
     });
     await barterItem.save();
     res.status(201).json({
