@@ -45,9 +45,9 @@ mongoose.set("strictQuery", true);
 
 mongoose
   .connect(
-    "mongodb+srv://hackerdu86:<" +
+    "mongodb+srv://hackerdu86:" +
       process.env.DB_PASSWORD +
-      ">@cluster-gestion-de-stag.b2wvhmb.mongodb.net/"
+      "@cluster-gestion-de-stag.b2wvhmb.mongodb.net/"
   )
   .then(() => {
     app.listen(3306);
