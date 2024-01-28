@@ -10,6 +10,7 @@ router.get(BASE_URL + "/:id", userController.getUserInfo);
 
 //POST
 router.post(BASE_URL, userController.createUser);
+router.post(BASE_URL +"/demandeEchange", userController.demandeEchange);
 
 //PATCH
 

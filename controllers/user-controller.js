@@ -1,5 +1,6 @@
 const HttpError = require("../models/http-error");
 const User = require("../models/user");
+const Produit = require("../models/barter-item")
 const crypto = require("crypto");
 //GET METHODS
 async function getUserId(req, res, next) {
@@ -62,6 +63,36 @@ async function createUser(req, res, next) {
   }
 }
 
+const demandeEchange = async (requete, reponse, next) => {
+    const { userId, produitId } = requete.body;
+  
+    try {
+      const user = await User.findById(userId);
+  
+      if (!user) {
+        return next(new HttpError("L'utilisateur n'existe pas.", 404));
+      }
+
+      const produit = await Produit.findById(produitId)
+      
+      user.products.push(produit)
+
+      
+  
+ 
+  
+  
+      await user.save();
+  
+  
+      reponse.status(200).json({ message: "L'utilisateur a faite la demande avec succes." });
+    } catch (err) {
+      return next(new HttpErreur("Une erreur s'est produite lors de la postulation au stage.", 500));
+    }
+  };
+
+
+
 //PATCH METHODS
 //DELETE METHODS
 
@@ -74,4 +105,5 @@ module.exports = {
   getUserId: getUserId,
   getUserInfo: getUserInfo,
   createUser: createUser,
+  demandeEchange: demandeEchange
 };
