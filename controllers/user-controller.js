@@ -82,35 +82,34 @@ const demandeEchange = async (requete, reponse, next) => {
     }
 
     const produit = await Produit.findById(produitId);
+    if (!produit) {
+      return next(new HttpError("Le produit n'existe pas.", 404));
+    }
 
     // Creation de demande
     const auteur = await User.findById(produit.userId);
-    const firstName = user.firstName;
-    const lastName = user.lastName;
-    const email = user.email;
-    const demande = new demande({
-      auteur,
-      firstName,
-      lastName,
-      email,
+    if (!auteur) {
+      return next(new HttpError("L'auteur du produit n'existe pas.", 404));
+    }
+    const demandeInstance = new demande({
+      auteur: auteur._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
       description,
       userId,
     });
-    auteur.demande.push(demande);
-    user.products.push(produit);
+    auteur.demande.push(demandeInstance);
+    user.products.push(produit._id);
 
+    await demandeInstance.save();
     await user.save();
     await auteur.save();
 
-    reponse
-      .status(200)
-      .json({ message: "L'utilisateur a faite la demande avec succes." });
+    reponse.status(200).json({ message: "L'utilisateur a faite la demande avec succes." });
   } catch (err) {
-    alert(err);
     console.error(err);
-    return next(
-      new HttpError("Une erreur s'est produite lors de la demande.", 500)
-    );
+    return next(new HttpError("Une erreur s'est produite lors de la demande.", 500));
   }
 };
 
