@@ -98,9 +98,11 @@ const demandeEchange = async (requete, reponse, next) => {
     });
     auteur.demande.push(demande);
     user.products.push(produit);
+    console.log("push")
 
     await user.save();
     await auteur.save();
+    console.log("saved")
 
     reponse
       .status(200)
