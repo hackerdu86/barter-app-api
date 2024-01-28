@@ -83,8 +83,6 @@ const demandeEchange = async (requete, reponse, next) => {
 
     const produit = await Produit.findById(produitId);
 
-    user.products.push(produit);
-    await user.save();
     // Creation de demande
     const auteur = User.findById(produit.userId);
     const firstName = user.firstName;

@@ -40,11 +40,10 @@ async function getBarterItem(req, res, next) {
 
 async function createBarterItem(req, res, next) {
   try {
-    const { title, imageName, description, address, userId, category } = req.body;
+    const { title, description, address, userId, category } = req.body;
 
     let barterItem = await new BarterItem({
       title,
-      imageName,
       description,
       address,
       userId,
