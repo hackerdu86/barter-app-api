@@ -24,6 +24,22 @@ async function getUserId(req, res, next) {
   }
 }
 
+async function getUserInfo(req, res, next) {
+  try {
+    let user = await User.findOne({ _id: req.params.id });
+    res.status(200).json({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+      });
+  } catch (err) {
+    console.log(err);
+    return next(
+      new HttpError("Error while trying to retrieve user information", 500)
+    );
+  }
+}
+
 //POST METHODS
 async function createUser(req, res, next) {
   const { firstName, lastName, email, rawPassword } = req.body;
@@ -51,10 +67,11 @@ async function createUser(req, res, next) {
 
 //UTILS
 function hashQuery(query) {
-   return crypto.createHash("md5").update(query).digest("hex").toString();
+  return crypto.createHash("md5").update(query).digest("hex").toString();
 }
 
 module.exports = {
   getUserId: getUserId,
+  getUserInfo: getUserInfo,
   createUser: createUser,
 };

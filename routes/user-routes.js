@@ -6,6 +6,7 @@ const BASE_URL = "/users";
 
 //GET
 router.get(BASE_URL + "/:email/:rawPassword", userController.getUserId);
+router.get(BASE_URL + "/:id", userController.getUserInfo);
 
 //POST
 router.post(BASE_URL, userController.createUser);
