@@ -1,6 +1,6 @@
 const HttpError = require("../models/http-error");
 const User = require("../models/user");
-const Produit = require("../models/barter-item")
+const Produit = require("../models/barter-item");
 const crypto = require("crypto");
 const demande = require("../models/demande");
 //GET METHODS
@@ -30,10 +30,10 @@ async function getUserInfo(req, res, next) {
   try {
     let user = await User.findOne({ _id: req.params.id });
     res.status(200).json({
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-      });
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+    });
   } catch (err) {
     console.log(err);
     return next(
@@ -52,7 +52,14 @@ async function createUser(req, res, next) {
     let user = await User.find({ email: email });
     console.log("user", user);
     if (user.length === 0) {
-      const usertoAdd = new User({ firstName, lastName, email, password });
+      const usertoAdd = new User({
+        firstName,
+        lastName,
+        email,
+        password,
+        products: [],
+        demande: [],
+      });
       await usertoAdd.save();
       res.status(201).json({ response: "User was successfully created!" });
     } else {
@@ -65,39 +72,47 @@ async function createUser(req, res, next) {
 }
 
 const demandeEchange = async (requete, reponse, next) => {
-    const { userId, produitId, message  } = requete.body;
-  
-    try {
-      const user = await User.findById(userId);
-  
-      if (!user) {
-        return next(new HttpError("L'utilisateur n'existe pas.", 404));
-      }
+  const { userId, produitId, message } = requete.body;
 
-      const produit = await Produit.findById(produitId)
-      
-      user.products.push(produit)
-      await user.save();
-      // Creation de demande
-      const auteur = User.findById(produit.userId);
-      const firstName = user.firstName;
-      const lastName = user.lastName;
-      const email = user.email;
-      const demande = new demande({auteur, firstName, lastName, email, message, userId})
-      auteur.demande.push(demande)
-      user.products.push(produit)
-      
-      await user.save();
-      await auteur.save();
-  
-  
-      reponse.status(200).json({ message: "L'utilisateur a faite la demande avec succes." });
-    } catch (err) {
-      return next(new HttpError("Une erreur s'est produite lors de la demande.", 500));
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return next(new HttpError("L'utilisateur n'existe pas.", 404));
     }
-  };
 
+    const produit = await Produit.findById(produitId);
 
+    user.products.push(produit);
+    await user.save();
+    // Creation de demande
+    const auteur = User.findById(produit.userId);
+    const firstName = user.firstName;
+    const lastName = user.lastName;
+    const email = user.email;
+    const demande = new demande({
+      auteur,
+      firstName,
+      lastName,
+      email,
+      message,
+      userId,
+    });
+    auteur.demande.push(demande);
+    user.products.push(produit);
+
+    await user.save();
+    await auteur.save();
+
+    reponse
+      .status(200)
+      .json({ message: "L'utilisateur a faite la demande avec succes." });
+  } catch (err) {
+    return next(
+      new HttpError("Une erreur s'est produite lors de la demande.", 500)
+    );
+  }
+};
 
 //PATCH METHODS
 //DELETE METHODS
@@ -111,5 +126,5 @@ module.exports = {
   getUserId: getUserId,
   getUserInfo: getUserInfo,
   createUser: createUser,
-  demandeEchange: demandeEchange
+  demandeEchange: demandeEchange,
 };
