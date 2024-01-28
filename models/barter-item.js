@@ -7,7 +7,7 @@ const barterItemSchema = new Schema({
   imageName: { type: String, required: true },
   description: { type: String, required: true },
   userId: { type: String, required: true },
-  category:{ type:Int32Array, required: true}
+  category:{ type: String, required: true}
 });
 
 module.exports = mongoose.model("BarterItem", barterItemSchema);
